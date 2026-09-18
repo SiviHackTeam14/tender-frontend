@@ -9,26 +9,48 @@
       (setAsideClick)="openSetAside()"
     />
 
-    <div class="triage-board__columns">
-      <app-verdict-column
-        title="Recommended to bid"
-        variant="bid"
-        [rows]="bidRows()"
-        (cardClick)="openTender($event)"
-      />
-      <app-verdict-column
-        title="Worth a closer look"
-        variant="maybe"
-        [rows]="maybeRows()"
-        (cardClick)="openTender($event)"
-      />
-    </div>
+    @if (isLoadingAnalysis()) {
+      <div class="triage-board__loading" role="status" aria-live="polite">
+        @if (analysisError()) {
+          <span class="material-symbols-outlined triage-board__loading-icon" aria-hidden="true"
+            >error</span
+          >
+          <p class="triage-board__loading-text">{{ analysisError() }}</p>
+          <button type="button" class="button button--secondary" (click)="retryAnalysis()">
+            Retry
+          </button>
+        } @else {
+          <span class="triage-board__spinner" aria-hidden="true"></span>
+          <p class="triage-board__loading-text">
+            Analyzing tenders for {{ activeProfile()!.name }}&hellip;
+          </p>
+          <p class="triage-board__loading-hint">
+            Each tender is checked against the profile's criteria — this can take up to a minute.
+          </p>
+        }
+      </div>
+    } @else {
+      <div class="triage-board__columns">
+        <app-verdict-column
+          title="Recommended to bid"
+          variant="bid"
+          [rows]="bidRows()"
+          (cardClick)="openTender($event)"
+        />
+        <app-verdict-column
+          title="Worth a closer look"
+          variant="maybe"
+          [rows]="maybeRows()"
+          (cardClick)="openTender($event)"
+        />
+      </div>
 
-    <app-collapsed-rejects
-      [rows]="rejectRows()"
-      [open]="showSetAside()"
-      (closed)="closeSetAside()"
-    />
+      <app-collapsed-rejects
+        [rows]="rejectRows()"
+        [open]="showSetAside()"
+        (closed)="closeSetAside()"
+      />
+    }
 
     <app-tender-detail-drawer [dossier]="selectedDossier()" (closed)="closeTender()" />
   </main>

@@ -29,7 +29,7 @@ export class AnalysisService {
     environment.useMock ? (analysesData as AnalysesByProfile) : {},
   );
 
-  private readonly _pending = new Set<string>();
+  private readonly _pendingIds = signal<ReadonlySet<string>>(new Set());
 
   constructor() {
     if (!environment.useMock) {
@@ -49,12 +49,35 @@ export class AnalysisService {
     return this._analysesByProfile()[profileId] ?? [];
   }
 
-  private fetchForProfile(profile: CompanyProfile): void {
+  // True only while the POST for this profile is in flight -- lets a
+  // consumer (TriageBoard) tell "still waiting on the LLM" apart from
+  // "resolved, genuinely zero analyses".
+  isPending(profileId: string): boolean {
+    return this._pendingIds().has(profileId);
+  }
+
+  // True once a fetch for this profile has resolved (even to []). Combined
+  // with isPending, distinguishes "never requested yet" from "loaded".
+  hasResult(profileId: string): boolean {
+    return this._analysesByProfile()[profileId] !== undefined;
+  }
+
+  // Bypasses the "already resolved" guard so a failed fetch can be retried
+  // (re-selecting the same profile object doesn't retrigger the constructor's
+  // effect, since the signal value is referentially unchanged).
+  retry(profile: CompanyProfile): void {
+    this.fetchForProfile(profile, true);
+  }
+
+  private fetchForProfile(profile: CompanyProfile, force = false): void {
     const profileId = profile.id;
-    if (this._pending.has(profileId) || this._analysesByProfile()[profileId] !== undefined) {
+    if (this._pendingIds().has(profileId)) {
       return;
     }
-    this._pending.add(profileId);
+    if (!force && this._analysesByProfile()[profileId] !== undefined) {
+      return;
+    }
+    this._pendingIds.update((ids) => new Set(ids).add(profileId));
     this.http
       .post<TenderAnalysis[]>(this.baseUrl, profile)
       .pipe(
@@ -69,7 +92,11 @@ export class AnalysisService {
         }),
       )
       .subscribe((analyses) => {
-        this._pending.delete(profileId);
+        this._pendingIds.update((ids) => {
+          const next = new Set(ids);
+          next.delete(profileId);
+          return next;
+        });
         if (analyses !== null) {
           this._analysesByProfile.update((byProfile) => ({ ...byProfile, [profileId]: analyses }));
         }
