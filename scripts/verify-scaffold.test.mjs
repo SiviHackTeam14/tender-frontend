@@ -36,7 +36,9 @@ describe('board route', () => {
     const drawerHtml = read('src/app/components/tender-detail-drawer/tender-detail-drawer.html');
     const criteriaHtml = read('src/app/components/criteria-breakdown/criteria-breakdown.html');
     assert.match(routes, /path:\s*'board'[\s\S]*TriageBoard/);
-    assert.match(boardHtml, /app-tender-card/);
+    assert.match(boardHtml, /app-profile-summary-bar/);
+    assert.match(boardHtml, /app-verdict-column/);
+    assert.match(boardHtml, /app-collapsed-rejects/);
     assert.match(boardHtml, /app-tender-detail-drawer/);
     assert.match(drawerHtml, /id="drawer-title"/);
     assert.match(criteriaHtml, /Full reasoning behind the verdict/);

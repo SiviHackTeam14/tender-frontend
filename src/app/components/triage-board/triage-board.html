@@ -1,121 +1,35 @@
-<section class="triage-board">
-	<header class="triage-board__hero">
-		<div class="triage-board__profile">
-			<div class="triage-board__avatar">{{ getProfileInitials(activeProfile.name) }}</div>
-			<div class="triage-board__profile-copy">
-				<div class="triage-board__profile-title-row">
-					<span class="triage-board__profile-name">{{ activeProfile.name }}</span>
-					<span class="material-symbols-outlined triage-board__verified" title="Verified Profile">verified</span>
-					<span class="triage-board__profile-badge">Verified master profile</span>
-				</div>
-				<span class="triage-board__profile-subtitle">{{ activeProfileSummary }}</span>
-			</div>
-		</div>
+@if (isUsableProfile()) {
+  <main class="triage-board">
+    <app-profile-summary-bar
+      [profileName]="activeProfile()!.name"
+      [totalCount]="bidRows().length + maybeRows().length + rejectRows().length"
+      [bidCount]="bidRows().length"
+      [maybeCount]="maybeRows().length"
+      [rejectCount]="rejectRows().length"
+      (setAsideClick)="openSetAside()"
+    />
 
-		<div class="triage-board__telemetry">
-			<span class="triage-board__telemetry-item"><strong>{{ scannedCount }}</strong> tenders scanned</span>
-			<span class="triage-board__telemetry-divider">•</span>
-			<span class="triage-board__telemetry-item"><strong>{{ recommendedCount }}</strong> recommended</span>
-			<span class="triage-board__telemetry-divider">•</span>
-			<span class="triage-board__telemetry-item"><strong>{{ reviewCount }}</strong> need review</span>
-			<span class="triage-board__telemetry-divider">•</span>
-			<button type="button" class="triage-board__telemetry-action" (click)="toggleSetAside()">
-				<strong>{{ setAsideCount }}</strong> set aside
-			</button>
-		</div>
+    <div class="triage-board__columns">
+      <app-verdict-column
+        title="Recommended to bid"
+        variant="bid"
+        [rows]="bidRows()"
+        (cardClick)="openTender($event)"
+      />
+      <app-verdict-column
+        title="Worth a closer look"
+        variant="maybe"
+        [rows]="maybeRows()"
+        (cardClick)="openTender($event)"
+      />
+    </div>
 
-		<div class="triage-board__actions">
-			<button type="button" class="triage-board__action-button">
-				<span class="material-symbols-outlined">swap_horiz</span>
-				Switch profile
-			</button>
-			<button type="button" class="triage-board__icon-button" aria-label="Export board report">
-				<span class="material-symbols-outlined">download</span>
-			</button>
-		</div>
-	</header>
+    <app-collapsed-rejects
+      [rows]="rejectRows()"
+      [open]="showSetAside()"
+      (closed)="closeSetAside()"
+    />
 
-	<div class="triage-board__lanes">
-		<article class="lane lane--bid">
-			<header class="lane__header">
-				<div class="lane__header-copy">
-					<span class="lane__dot lane__dot--bid"></span>
-					<h2 class="lane__title">Recommended to bid</h2>
-					<span class="lane__count lane__count--bid">{{ bidDossiers.length }}</span>
-				</div>
-				<div class="lane__header-note">
-					<span class="material-symbols-outlined">bolt</span>
-					100% policy match
-				</div>
-			</header>
-
-			<div class="lane__cards">
-				<app-tender-card
-					*ngFor="let dossier of bidDossiers"
-					[active]="dossier.id === selectedTenderId"
-					[dossier]="dossier"
-					(tenderSelected)="selectTender($event)"
-				></app-tender-card>
-			</div>
-		</article>
-
-		<article class="lane lane--review">
-			<header class="lane__header">
-				<div class="lane__header-copy">
-					<span class="lane__dot lane__dot--review"></span>
-					<h2 class="lane__title">Worth a closer look</h2>
-					<span class="lane__count lane__count--review">{{ reviewDossiers.length }}</span>
-				</div>
-				<div class="lane__header-note">
-					<span class="material-symbols-outlined">visibility</span>
-					Manual qualification required
-				</div>
-			</header>
-
-			<div class="lane__scroll-note">
-				<span>Showing {{ reviewDossiers.length }} prioritized items</span>
-				<span class="lane__scroll-note-tip">
-					<span class="material-symbols-outlined">unfold_more</span>
-					Scroll to inspect all
-				</span>
-			</div>
-
-			<div class="lane__cards">
-				<app-tender-card
-					*ngFor="let dossier of reviewDossiers"
-					[active]="dossier.id === selectedTenderId"
-					[dossier]="dossier"
-					(tenderSelected)="selectTender($event)"
-				></app-tender-card>
-			</div>
-		</article>
-	</div>
-
-	<section class="triage-board__set-aside">
-		<button type="button" class="triage-board__set-aside-trigger" (click)="toggleSetAside()">
-			<div class="triage-board__set-aside-trigger-copy">
-				<span class="material-symbols-outlined">open_in_new</span>
-				<div>
-					<h3>{{ setAsideCount }} tenders set aside</h3>
-					<p>Click to inspect automated rejection logs</p>
-				</div>
-			</div>
-			<div class="triage-board__set-aside-reasons">
-				<span>{{ setAsideCount }} rejection reasons captured</span>
-				<span>•</span>
-				<span>Distance, cert and capacity constraints</span>
-			</div>
-		</button>
-
-		<div *ngIf="showSetAside" class="triage-board__set-aside-list">
-			<app-tender-card
-				*ngFor="let dossier of setAsideDossiers"
-				[active]="dossier.id === selectedTenderId"
-				[dossier]="dossier"
-				(tenderSelected)="selectTender($event)"
-			></app-tender-card>
-		</div>
-	</section>
-
-	<app-tender-detail-drawer [dossier]="selectedTender" (closed)="closeTender()"></app-tender-detail-drawer>
-</section>
+    <app-tender-detail-drawer [dossier]="selectedDossier()" (closed)="closeTender()" />
+  </main>
+}

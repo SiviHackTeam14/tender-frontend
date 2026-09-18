@@ -1,0 +1,81 @@
+@if (open) {
+  <div class="collapsed-rejects" role="dialog" aria-modal="true" aria-label="Set-aside tenders">
+    <div class="collapsed-rejects__backdrop" (click)="close()"></div>
+
+    <div class="collapsed-rejects__dialog">
+      <div class="collapsed-rejects__header">
+        <div class="collapsed-rejects__heading">
+          <div class="collapsed-rejects__title-row">
+            <span class="material-symbols-outlined" aria-hidden="true">block</span>
+            <h2 class="collapsed-rejects__title">Set-Aside Tenders ({{ rows.length }})</h2>
+          </div>
+          <p class="collapsed-rejects__subtitle">
+            Auto-filtered: disqualified automatically by profile constraints.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="collapsed-rejects__close"
+          title="Close (Esc)"
+          aria-label="Close"
+          (click)="close()"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="collapsed-rejects__filters">
+        <div class="collapsed-rejects__search">
+          <span class="material-symbols-outlined" aria-hidden="true">search</span>
+          <input type="text" placeholder="Search disqualified tenders..." disabled />
+        </div>
+        <span class="collapsed-rejects__chip">All ({{ rows.length }})</span>
+      </div>
+
+      <div class="collapsed-rejects__list">
+        @for (row of rows; track row.tender.id) {
+          <div class="collapsed-rejects__row">
+            <div class="collapsed-rejects__row-main">
+              <div class="collapsed-rejects__row-title-line">
+                <h3 class="collapsed-rejects__row-title">{{ row.tender.title }}</h3>
+                <span class="collapsed-rejects__row-meta"
+                  >&middot; {{ row.tender.location }} &middot; Tender {{ row.tender.id }}</span
+                >
+              </div>
+              <div class="collapsed-rejects__row-flaw-line">
+                <span class="collapsed-rejects__flaw">
+                  <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
+                  Fatal flaw: {{ row.analysis.hard_reject_reason ?? 'No reason recorded' }}
+                </span>
+              </div>
+            </div>
+            <div class="collapsed-rejects__row-actions">
+              <button type="button" class="collapsed-rejects__restore" disabled>
+                Restore to Review
+              </button>
+              <a
+                class="collapsed-rejects__notice"
+                [href]="row.tender.source_url"
+                target="_blank"
+                rel="noopener"
+                title="View notice"
+                aria-label="View notice"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+              </a>
+            </div>
+          </div>
+        } @empty {
+          <p class="collapsed-rejects__empty">No tenders set aside for the active profile.</p>
+        }
+      </div>
+
+      <div class="collapsed-rejects__footer">
+        <span>{{ rows.length }} disqualified tenders</span>
+        <button type="button" class="collapsed-rejects__footer-close" (click)="close()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+}

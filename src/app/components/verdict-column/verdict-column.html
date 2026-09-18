@@ -1,0 +1,29 @@
+<section
+  class="verdict-column"
+  [class.verdict-column--bid]="variant === 'bid'"
+  [class.verdict-column--maybe]="variant === 'maybe'"
+>
+  <div class="verdict-column__header">
+    <div class="verdict-column__title-group">
+      <span class="verdict-column__dot" aria-hidden="true"></span>
+      <h2 class="verdict-column__title">{{ title }}</h2>
+      <span class="verdict-column__count">{{ rows.length }}</span>
+    </div>
+    <div class="verdict-column__caption">
+      <span class="material-symbols-outlined" aria-hidden="true">{{ captionIcon }}</span>
+      <span>{{ captionText }}</span>
+    </div>
+  </div>
+
+  <div class="verdict-column__list">
+    @for (row of rows; track row.tender.id) {
+      <app-tender-card
+        [tender]="row.tender"
+        [analysis]="row.analysis"
+        (cardClick)="cardClick.emit($event)"
+      />
+    } @empty {
+      <p class="verdict-column__empty">No tenders in this group for the active profile.</p>
+    }
+  </div>
+</section>

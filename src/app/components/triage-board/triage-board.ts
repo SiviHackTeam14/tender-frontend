@@ -1,105 +1,111 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import {
-  TenderDossier,
-  getTenderDossiersForProfile,
-  mockProfiles,
-} from '../../data/mock-dashboard-data';
-import { TenderCardComponent } from '../tender-card/tender-card';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Tender, TenderAnalysis } from '../../models';
+import { TenderDossier } from '../../data/mock-dashboard-data';
+import { AnalysisService } from '../../services/analysis.service';
+import { ProfileService } from '../../services/profile.service';
+import { TenderService } from '../../services/tender.service';
+import { CollapsedRejectsComponent } from '../collapsed-rejects/collapsed-rejects';
+import { ProfileSummaryBarComponent } from '../profile-summary-bar/profile-summary-bar';
 import { TenderDetailDrawerComponent } from '../tender-detail-drawer/tender-detail-drawer';
+import { VerdictColumnComponent } from '../verdict-column/verdict-column';
 
+export interface TenderRow {
+  tender: Tender;
+  analysis: TenderAnalysis;
+}
+
+// No mock TenderAnalysis[] exists for a custom profile -- a custom active
+// profile is treated the same as "no active profile" (human decision, see
+// spec's frozen Boundaries) rather than fabricating analyses for it.
+const SUPPORTED_PROFILE_IDS: ReadonlySet<string> = new Set(['profile-a', 'profile-b']);
+
+// Container: injects the profile/tender/analysis services, redirects to '/'
+// whenever there's no usable active profile, joins tenders.json + the
+// active profile's analyses.json entries by tender_id, groups the result by
+// verdict, and owns the set-aside modal's and detail drawer's open state.
 @Component({
-  imports: [CommonModule, TenderCardComponent, TenderDetailDrawerComponent],
   selector: 'app-triage-board',
-  standalone: true,
+  imports: [
+    ProfileSummaryBarComponent,
+    VerdictColumnComponent,
+    CollapsedRejectsComponent,
+    TenderDetailDrawerComponent,
+  ],
   templateUrl: './triage-board.html',
   styleUrl: './triage-board.css',
 })
 export class TriageBoard {
-  readonly activeProfile = mockProfiles[0];
-  readonly dossiers = this.activeProfile ? getTenderDossiersForProfile(this.activeProfile.id) : [];
-  selectedTenderId: string | null = this.dossiers.find((dossier) => dossier.analysis.verdict === 'BID')?.id ??
-    this.dossiers[0]?.id ?? null;
-  showSetAside = true;
+  private readonly profileService = inject(ProfileService);
+  private readonly tenderService = inject(TenderService);
+  private readonly analysisService = inject(AnalysisService);
+  private readonly router = inject(Router);
 
-  get bidDossiers(): TenderDossier[] {
-    return this.dossiers.filter((dossier) => dossier.analysis.verdict === 'BID');
-  }
+  readonly activeProfile = this.profileService.activeProfile;
+  readonly showSetAside = signal(false);
+  readonly selectedTenderId = signal<string | null>(null);
 
-  get reviewDossiers(): TenderDossier[] {
-    return this.dossiers.filter((dossier) => dossier.analysis.verdict === 'MAYBE');
-  }
+  readonly isUsableProfile = computed(() => {
+    const profile = this.activeProfile();
+    return !!profile && SUPPORTED_PROFILE_IDS.has(profile.id);
+  });
 
-  get setAsideDossiers(): TenderDossier[] {
-    return this.dossiers.filter((dossier) => dossier.analysis.verdict === 'REJECT');
-  }
+  private readonly rows = computed<TenderRow[]>(() => {
+    const profile = this.activeProfile();
+    if (!profile || !SUPPORTED_PROFILE_IDS.has(profile.id)) {
+      return [];
+    }
+    const tenderById = new Map(this.tenderService.tenders().map((tender) => [tender.id, tender]));
+    return this.analysisService
+      .analysesForProfile(profile.id)
+      .map((analysis) => {
+        const tender = tenderById.get(analysis.tender_id);
+        return tender ? { tender, analysis } : null;
+      })
+      .filter((row): row is TenderRow => row !== null);
+  });
 
-  get selectedTender(): TenderDossier | null {
-    if (this.selectedTenderId === null) {
+  readonly bidRows = computed(() => this.rows().filter((row) => row.analysis.verdict === 'BID'));
+  readonly maybeRows = computed(() =>
+    this.rows().filter((row) => row.analysis.verdict === 'MAYBE'),
+  );
+  readonly rejectRows = computed(() =>
+    this.rows().filter((row) => row.analysis.verdict === 'REJECT'),
+  );
+
+  // Adapts the selected row to the TenderDossier shape TenderDetailDrawerComponent
+  // (Story 4.3) expects, without changing this board's own tender/analysis pair
+  // convention used by VerdictColumnComponent/CollapsedRejectsComponent.
+  readonly selectedDossier = computed<TenderDossier | null>(() => {
+    const id = this.selectedTenderId();
+    if (!id) {
       return null;
     }
+    const row = this.rows().find(({ tender }) => tender.id === id);
+    return row ? { ...row.tender, analysis: row.analysis } : null;
+  });
 
-    return this.dossiers.find((dossier) => dossier.id === this.selectedTenderId) ?? null;
+  constructor() {
+    effect(() => {
+      if (!this.isUsableProfile()) {
+        this.router.navigateByUrl('/');
+      }
+    });
   }
 
-  get totalPipelineValue(): number {
-    return this.dossiers.reduce((total, dossier) => total + (dossier.value_eur ?? 0), 0);
+  openSetAside(): void {
+    this.showSetAside.set(true);
   }
 
-  get blockedTenderCount(): number {
-    return this.dossiers.filter((dossier) => dossier.hidden_blockers.length > 0).length;
+  closeSetAside(): void {
+    this.showSetAside.set(false);
   }
 
-  get reviewedCount(): number {
-    return this.dossiers.length;
-  }
-
-  get scannedCount(): number {
-    return this.dossiers.length;
-  }
-
-  get recommendedCount(): number {
-    return this.bidDossiers.length;
-  }
-
-  get reviewCount(): number {
-    return this.reviewDossiers.length;
-  }
-
-  get setAsideCount(): number {
-    return this.setAsideDossiers.length;
-  }
-
-  get activeProfileSummary(): string {
-    return `${this.activeProfile.location} · ${this.activeProfile.focus_areas.join(' · ').replaceAll('_', ' ')}`;
-  }
-
-  getProfileInitials(name: string): string {
-    return name
-      .split(' ')
-      .map((part) => part.charAt(0))
-      .join('')
-      .slice(0, 2)
-      .toUpperCase();
-  }
-
-  selectTender(tenderId: string): void {
-    this.selectedTenderId = tenderId;
+  openTender(tenderId: string): void {
+    this.selectedTenderId.set(tenderId);
   }
 
   closeTender(): void {
-    this.selectedTenderId = null;
-  }
-
-  toggleSetAside(): void {
-    this.showSetAside = !this.showSetAside;
-  }
-
-  formatMoney(value: number): string {
-    return new Intl.NumberFormat('de-DE', {
-      currency: 'EUR',
-      maximumFractionDigits: 0,
-      style: 'currency',
-    }).format(value);
+    this.selectedTenderId.set(null);
   }
 }
