@@ -3,3 +3,4 @@ export * from './company-profile';
 export * from './tender';
 export * from './criterion-result';
 export * from './tender-analysis';
+export * from './extraction';
