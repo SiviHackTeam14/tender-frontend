@@ -1,11 +1,13 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tender, TenderAnalysis } from '../../models';
+import { TenderDossier } from '../../data/mock-dashboard-data';
 import { AnalysisService } from '../../services/analysis.service';
 import { ProfileService } from '../../services/profile.service';
 import { TenderService } from '../../services/tender.service';
 import { CollapsedRejectsComponent } from '../collapsed-rejects/collapsed-rejects';
 import { ProfileSummaryBarComponent } from '../profile-summary-bar/profile-summary-bar';
+import { TenderDetailDrawerComponent } from '../tender-detail-drawer/tender-detail-drawer';
 import { VerdictColumnComponent } from '../verdict-column/verdict-column';
 
 export interface TenderRow {
@@ -21,10 +23,15 @@ const SUPPORTED_PROFILE_IDS: ReadonlySet<string> = new Set(['profile-a', 'profil
 // Container: injects the profile/tender/analysis services, redirects to '/'
 // whenever there's no usable active profile, joins tenders.json + the
 // active profile's analyses.json entries by tender_id, groups the result by
-// verdict, and owns the set-aside modal's open state.
+// verdict, and owns the set-aside modal's and detail drawer's open state.
 @Component({
   selector: 'app-triage-board',
-  imports: [ProfileSummaryBarComponent, VerdictColumnComponent, CollapsedRejectsComponent],
+  imports: [
+    ProfileSummaryBarComponent,
+    VerdictColumnComponent,
+    CollapsedRejectsComponent,
+    TenderDetailDrawerComponent,
+  ],
   templateUrl: './triage-board.html',
   styleUrl: './triage-board.css',
 })
@@ -36,6 +43,7 @@ export class TriageBoard {
 
   readonly activeProfile = this.profileService.activeProfile;
   readonly showSetAside = signal(false);
+  readonly selectedTenderId = signal<string | null>(null);
 
   readonly isUsableProfile = computed(() => {
     const profile = this.activeProfile();
@@ -65,6 +73,18 @@ export class TriageBoard {
     this.rows().filter((row) => row.analysis.verdict === 'REJECT'),
   );
 
+  // Adapts the selected row to the TenderDossier shape TenderDetailDrawerComponent
+  // (Story 4.3) expects, without changing this board's own tender/analysis pair
+  // convention used by VerdictColumnComponent/CollapsedRejectsComponent.
+  readonly selectedDossier = computed<TenderDossier | null>(() => {
+    const id = this.selectedTenderId();
+    if (!id) {
+      return null;
+    }
+    const row = this.rows().find(({ tender }) => tender.id === id);
+    return row ? { ...row.tender, analysis: row.analysis } : null;
+  });
+
   constructor() {
     effect(() => {
       if (!this.isUsableProfile()) {
@@ -79,5 +99,13 @@ export class TriageBoard {
 
   closeSetAside(): void {
     this.showSetAside.set(false);
+  }
+
+  openTender(tenderId: string): void {
+    this.selectedTenderId.set(tenderId);
+  }
+
+  closeTender(): void {
+    this.selectedTenderId.set(null);
   }
 }

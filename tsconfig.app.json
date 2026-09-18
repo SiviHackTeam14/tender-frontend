@@ -3,6 +3,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "types": []
   },
   "include": ["src/**/*.ts"],

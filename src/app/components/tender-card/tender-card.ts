@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { AnalysisCriteria, CriterionStatus, Tender, TenderAnalysis } from '../../models';
 import { ProfileService } from '../../services/profile.service';
 
@@ -44,6 +44,12 @@ const STATUS_COLOR_VAR: Record<CriterionStatus, string> = {
 export class TenderCardComponent {
   @Input({ required: true }) tender!: Tender;
   @Input({ required: true }) analysis!: TenderAnalysis;
+
+  // Opens the Tender Detail Drawer (Story 4.3) via the card's "Full
+  // breakdown" link -- the exact interaction epic-4-context.md's UX
+  // patterns describe ("the drawer is for depth, not for information
+  // hidden from the card").
+  @Output() cardClick = new EventEmitter<string>();
 
   private readonly profileService = inject(ProfileService);
 
@@ -112,5 +118,9 @@ export class TenderCardComponent {
 
   statusColor(status: CriterionStatus): string {
     return STATUS_COLOR_VAR[status];
+  }
+
+  openBreakdown(): void {
+    this.cardClick.emit(this.tender.id);
   }
 }

@@ -17,7 +17,11 @@
 
   <div class="verdict-column__list">
     @for (row of rows; track row.tender.id) {
-      <app-tender-card [tender]="row.tender" [analysis]="row.analysis" />
+      <app-tender-card
+        [tender]="row.tender"
+        [analysis]="row.analysis"
+        (cardClick)="cardClick.emit($event)"
+      />
     } @empty {
       <p class="verdict-column__empty">No tenders in this group for the active profile.</p>
     }

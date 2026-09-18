@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Tender, TenderAnalysis } from '../../models';
 import { TenderCardComponent } from '../tender-card/tender-card';
 
@@ -22,6 +22,7 @@ export class VerdictColumnComponent {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) variant!: VerdictColumnVariant;
   @Input() rows: VerdictRow[] = [];
+  @Output() cardClick = new EventEmitter<string>();
 
   get captionIcon(): string {
     return this.variant === 'bid' ? 'bolt' : 'visibility';

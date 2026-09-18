@@ -10,8 +10,18 @@
     />
 
     <div class="triage-board__columns">
-      <app-verdict-column title="Recommended to bid" variant="bid" [rows]="bidRows()" />
-      <app-verdict-column title="Worth a closer look" variant="maybe" [rows]="maybeRows()" />
+      <app-verdict-column
+        title="Recommended to bid"
+        variant="bid"
+        [rows]="bidRows()"
+        (cardClick)="openTender($event)"
+      />
+      <app-verdict-column
+        title="Worth a closer look"
+        variant="maybe"
+        [rows]="maybeRows()"
+        (cardClick)="openTender($event)"
+      />
     </div>
 
     <app-collapsed-rejects
@@ -19,5 +29,7 @@
       [open]="showSetAside()"
       (closed)="closeSetAside()"
     />
+
+    <app-tender-detail-drawer [dossier]="selectedDossier()" (closed)="closeTender()" />
   </main>
 }
