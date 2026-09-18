@@ -32,7 +32,6 @@
 .app-shell__brand-group,
 .app-shell__header-actions,
 .app-shell__profile-chip,
-.app-shell__user-chip,
 .app-shell__nav-link {
 	display: flex;
 	align-items: center;
@@ -62,14 +61,12 @@
 }
 
 .app-shell__brand-name,
-.app-shell__user-name,
 .app-shell__profile-name {
 	color: var(--on-surface);
 	font-size: 0.875rem;
 	font-weight: 600;
 }
 
-.app-shell__user-role,
 .app-shell__status-pill,
 .app-shell__sidebar-kicker {
 	color: var(--on-surface-variant);
@@ -101,8 +98,7 @@
 }
 
 .app-shell__profile-chip,
-.app-shell__icon-button,
-.app-shell__user-chip {
+.app-shell__icon-button {
 	border: 0;
 	border-radius: 0.5rem;
 	background: transparent;
@@ -138,28 +134,6 @@
 .app-shell__profile-chip:hover {
 	background: var(--surface-container);
 	color: var(--on-surface);
-}
-
-.app-shell__user-chip {
-	gap: 0.5rem;
-}
-
-.app-shell__avatar {
-	width: 2rem;
-	height: 2rem;
-	border-radius: 9999px;
-	display: grid;
-	place-items: center;
-	background: var(--surface-container-highest);
-	color: var(--primary);
-	font-size: 0.75rem;
-	font-weight: 700;
-}
-
-.app-shell__user-copy {
-	display: flex;
-	flex-direction: column;
-	gap: 0.125rem;
 }
 
 .app-shell__sidebar {
