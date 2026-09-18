@@ -1,17 +1,43 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject, signal } from '@angular/core';
+import { catchError, of, tap } from 'rxjs';
+import { apiPath, environment } from '../environments/environment';
 import { CompanyProfile } from '../models';
 import profilesData from '../data/profiles.json';
 
-// Lightweight in-memory stub. No HttpClient and no environment.useMock branch --
-// Story 4.4 swaps this for real HTTP calls without touching the components
-// that depend on it.
+// HttpClient wrapper over GET /api/profiles, with environment.useMock switching
+// back to the local fixture -- Story 4.4. `selectProfile`/`setCustomProfile`
+// stay pure client-side state either way; no HTTP involved in either.
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
-  private readonly _profiles = signal<CompanyProfile[]>(profilesData as CompanyProfile[]);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = apiPath('/api/profiles');
+
+  readonly error = signal<string | null>(null);
+
+  private readonly _profiles = signal<CompanyProfile[]>(
+    environment.useMock ? (profilesData as CompanyProfile[]) : [],
+  );
   readonly profiles = this._profiles.asReadonly();
 
   private readonly _activeProfile = signal<CompanyProfile | null>(null);
   readonly activeProfile = this._activeProfile.asReadonly();
+
+  constructor() {
+    if (!environment.useMock) {
+      this.http
+        .get<CompanyProfile[]>(this.baseUrl)
+        .pipe(
+          tap(() => this.error.set(null)),
+          catchError((err) => {
+            this.error.set('Failed to load profiles.');
+            console.error('ProfileService: failed to fetch profiles', err);
+            return of<CompanyProfile[]>([]);
+          }),
+        )
+        .subscribe((profiles) => this._profiles.set(profiles));
+    }
+  }
 
   selectProfile(id: string): void {
     const profile = this._profiles().find((candidate) => candidate.id === id);
