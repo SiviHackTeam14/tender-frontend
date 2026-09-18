@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { exhaustMap, Observable, switchMap, takeWhile, timer } from 'rxjs';
 import { environment } from '../environments/environment';
-import { ExtractionAccepted, ExtractionJob } from '../models/extraction';
+import { ExtractedRequirements, ExtractionAccepted, ExtractionJob } from '../models/extraction';
 
 @Injectable({ providedIn: 'root' })
 export class ExtractionService {
@@ -31,6 +31,15 @@ export class ExtractionService {
   // Subscribe once per upload. Unsubscribing stops polling, not the backend job.
   extract(file: File): Observable<ExtractionJob> {
     return this.upload(file).pipe(switchMap((accepted) => this.watch(accepted.id)));
+  }
+
+  // Fields only: no company profile, notice fallbacks or suitability decisions.
+  data(id: string): Observable<ExtractedRequirements> {
+    return this.http.get<ExtractedRequirements>(this.dataUrl(id));
+  }
+
+  dataUrl(id: string): string {
+    return `${this.baseUrl}/${encodeURIComponent(id)}/data`;
   }
 
   auditUrl(id: string): string {

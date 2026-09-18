@@ -64,7 +64,7 @@
       </div>
       <div class="drawer__metric">
         <span class="drawer__metric-label">Trade type</span>
-        <span class="drawer__metric-value">{{ tender.trade_type.replaceAll('_', ' ') }}</span>
+              <span class="drawer__metric-value">{{ tender.trade_type?.replaceAll('_', ' ') ?? 'Not stated' }}</span>
       </div>
     </div>
 
@@ -141,7 +141,7 @@
           <ul class="drawer__bullet-list">
             <li>
               <span class="drawer__bullet-label">Role required</span>
-              <span>{{ tender.role_required.replaceAll('_', ' ') }}</span>
+              <span>{{ tender.role_required?.replaceAll('_', ' ') ?? 'Not stated' }}</span>
             </li>
             <li>
               <span class="drawer__bullet-label">Certifications</span>
