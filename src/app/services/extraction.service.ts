@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { exhaustMap, map, Observable, switchMap, takeWhile, timer } from 'rxjs';
-import type { Tender } from '../models/tender';
-import { applyExtractionToTender } from './tender-extraction.adapter';
+import { exhaustMap, Observable, switchMap, takeWhile, timer } from 'rxjs';
 import { environment } from '../environments/environment';
-import { ExtractionAccepted, ExtractionJob, TenderExtractionJob } from '../models/extraction';
+import { ExtractedRequirements, ExtractionAccepted, ExtractionJob } from '../models/extraction';
 
 @Injectable({ providedIn: 'root' })
 export class ExtractionService {
@@ -35,16 +33,13 @@ export class ExtractionService {
     return this.upload(file).pipe(switchMap((accepted) => this.watch(accepted.id)));
   }
 
-  // Preserves result.field_status, evidence and review reasons alongside the enriched notice.
-  extractForTender(file: File, notice: Tender): Observable<TenderExtractionJob> {
-    return this.extract(file).pipe(
-      map((job) => ({
-        ...job,
-        tender: job.status === 'completed' && job.result
-          ? applyExtractionToTender(notice, job.result)
-          : null,
-      })),
-    );
+  // Fields only: no company profile, notice fallbacks or suitability decisions.
+  data(id: string): Observable<ExtractedRequirements> {
+    return this.http.get<ExtractedRequirements>(this.dataUrl(id));
+  }
+
+  dataUrl(id: string): string {
+    return `${this.baseUrl}/${encodeURIComponent(id)}/data`;
   }
 
   auditUrl(id: string): string {

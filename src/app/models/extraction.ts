@@ -1,4 +1,4 @@
-import type { RoleRequired, Tender } from './tender';
+import type { RoleRequired } from './tender';
 
 // Matches backend app/api/extraction_models.py and its OpenAPI schema.
 export interface ExtractedRequirements {
@@ -64,9 +64,5 @@ export interface ExtractionAccepted {
   id: string;
   status_url: string;
   audit_url: string;
-}
-
-// Includes the original extraction result/audit metadata inherited from ExtractionJob.
-export interface TenderExtractionJob extends ExtractionJob {
-  tender: Tender | null;
+  data_url: string;
 }

@@ -15,35 +15,36 @@ describe('fresh clone run', () => {
     assert.match(readme, /npm install/);
     assert.match(readme, /npm start/);
     assert.match(readme, /localhost:4200/);
-    assert.match(readme, /Node\.js 20 or 22 LTS/);
+    assert.match(readme, /Node\.js 22\.22\.3\+ or 24\.15\+/);
   });
 });
 
 describe('home route', () => {
-  it('maps / to Profile Select TODO placeholder', () => {
+  it('maps / to document extraction', () => {
     const routes = read('src/app/app.routes.ts');
-    const html = read('src/app/components/profile-select/profile-select.html');
-    assert.match(routes, /path:\s*''[\s\S]*ProfileSelect/);
-    assert.match(html, /<h1>TODO<\/h1>/);
+    const html = read('src/app/components/tender-extraction/tender-extraction.html');
+    assert.match(routes, /path:\s*''[\s\S]*TenderExtraction/);
+    assert.match(html, /Extracted JSON/);
+    assert.doesNotMatch(html, /ACCEPT|BID|MAYBE|REJECT|profile-select/);
     assert.match(read('src/app/app.html'), /router-outlet/);
   });
 });
 
 describe('board route', () => {
-  it('maps /board to Triage Board TODO placeholder', () => {
+  it('redirects the old board URL to extraction', () => {
     const routes = read('src/app/app.routes.ts');
-    const html = read('src/app/components/triage-board/triage-board.html');
-    assert.match(routes, /path:\s*'board'[\s\S]*TriageBoard/);
-    assert.match(html, /<h1>TODO<\/h1>/);
+    assert.match(routes, /path:\s*'board',\s*redirectTo:\s*''/);
+    assert.doesNotMatch(routes, /TriageBoard|ProfileSelect/);
   });
 });
 
 describe('folder layout', () => {
   it('tracks models, data, services, component stubs, and environment', () => {
     const required = [
-      'src/app/models/.gitkeep',
+      'src/app/models/extraction.ts',
       'src/app/data/.gitkeep',
-      'src/app/services/.gitkeep',
+      'src/app/services/extraction.service.ts',
+      'src/app/components/tender-extraction/tender-extraction.ts',
       'src/app/components/profile-select/profile-select.ts',
       'src/app/components/triage-board/triage-board.ts',
       'src/app/components/tender-card/.gitkeep',
@@ -55,7 +56,7 @@ describe('folder layout', () => {
     }
     const env = read('src/app/environments/environment.ts');
     assert.match(env, /apiUrl:\s*'http:\/\/localhost:8000'/);
-    assert.match(env, /useMock:\s*true/);
+    assert.match(env, /useMock:\s*false/);
   });
 });
 

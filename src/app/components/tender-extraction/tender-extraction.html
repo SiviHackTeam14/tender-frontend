@@ -1,0 +1,55 @@
+<main class="workspace">
+  <header>
+    <p class="eyebrow">TenderPilot · Document extraction</p>
+    <h1>Tender documents to JSON</h1>
+    <p>Upload a tender package to collect its stated requirements in a structured file.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="upload-heading">
+    <h2 id="upload-heading">Upload a tender</h2>
+    <label for="tender-file">Tender ZIP</label>
+    <input id="tender-file" type="file" accept=".zip,application/zip"
+      [disabled]="busy() || canResume()" (change)="selectFile($event)" aria-describedby="file-help" />
+    <p id="file-help" class="muted">PDF documents in a ZIP, up to 50 MiB.</p>
+    <button type="button" (click)="start()" [disabled]="!selectedFile() || busy() || canResume()">
+      {{ busy() ? 'Extracting…' : 'Extract JSON' }}
+    </button>
+
+    @if (statusLabel()) {
+      <div class="progress" role="status" aria-live="polite">
+        <p>{{ statusLabel() }}</p>
+        @if (busy()) {
+          <progress aria-label="Extraction progress" [max]="job()?.progress?.total_chunks || 1"
+            [attr.value]="job()?.progress?.total_chunks ? job()?.progress?.completed_chunks : null"></progress>
+          @if (job()?.progress?.total_chunks) {
+            <span>{{ job()?.progress?.completed_chunks }} / {{ job()?.progress?.total_chunks }} sections</span>
+          }
+        }
+      </div>
+    }
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    @if (canResume()) {
+      <button type="button" class="secondary" (click)="resume()" [disabled]="busy()">Resume progress</button>
+    }
+  </section>
+
+  @if (job(); as current) {
+    @if (current.result; as result) {
+      <section class="panel" aria-labelledby="result-heading">
+        <div class="result-heading">
+          <h2 id="result-heading">Extracted JSON</h2>
+          <a class="button" [href]="extractor.dataUrl(current.id)">Download JSON</a>
+        </div>
+        <p class="muted">{{ result.pages_processed }} pages processed from selected PDFs in {{ current.filename }}.</p>
+        <p>Unknown values remain <code>null</code>; empty lists mean no findings were extracted.</p>
+        @if (result.requires_review) {
+          <p class="review">Some extracted values are combined or conflicting. Check the source audit before using them.</p>
+        }
+        <pre tabindex="0" aria-label="Extracted tender fields">{{ json() }}</pre>
+        <a [href]="extractor.auditUrl(current.id)" target="_blank" rel="noopener">Open source audit</a>
+      </section>
+    }
+  }
+</main>

@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { ProfileSelect } from './components/profile-select/profile-select';
-import { TriageBoard } from './components/triage-board/triage-board';
+import { TenderExtraction } from './components/tender-extraction/tender-extraction';
 
 export const routes: Routes = [
-  { path: '', component: ProfileSelect },
-  { path: 'board', component: TriageBoard },
+  { path: '', component: TenderExtraction },
+  { path: 'board', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: '' },
 ];
