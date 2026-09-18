@@ -1,0 +1,39 @@
+<header class="profile-summary-bar">
+  <div class="profile-summary-bar__identity">
+    <div class="profile-summary-bar__avatar" aria-hidden="true">{{ initial }}</div>
+    <div class="profile-summary-bar__name-block">
+      <span class="profile-summary-bar__name">{{ profileName }}</span>
+      <span class="profile-summary-bar__subtitle">Active Triage Profile</span>
+    </div>
+  </div>
+
+  <div class="profile-summary-bar__telemetry">
+    <span class="profile-summary-bar__metric">{{ totalCount }}</span>
+    <span>tenders scanned</span>
+    <span class="profile-summary-bar__sep" aria-hidden="true">&bull;</span>
+    <span class="profile-summary-bar__metric profile-summary-bar__metric--bid">{{ bidCount }}</span>
+    <span>recommended</span>
+    <span class="profile-summary-bar__sep" aria-hidden="true">&bull;</span>
+    <span class="profile-summary-bar__metric profile-summary-bar__metric--maybe">{{
+      maybeCount
+    }}</span>
+    <span>need review</span>
+    <span class="profile-summary-bar__sep" aria-hidden="true">&bull;</span>
+    <button
+      type="button"
+      class="profile-summary-bar__set-aside"
+      id="header-set-aside-trigger"
+      (click)="setAsideClick.emit()"
+    >
+      <span class="profile-summary-bar__metric">{{ rejectCount }}</span>
+      <span>set aside</span>
+    </button>
+  </div>
+
+  <div class="profile-summary-bar__actions">
+    <button type="button" class="profile-summary-bar__switch" (click)="switchProfile()">
+      <span class="material-symbols-outlined" aria-hidden="true">swap_horiz</span>
+      <span>Switch profile</span>
+    </button>
+  </div>
+</header>

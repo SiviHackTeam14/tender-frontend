@@ -30,11 +30,13 @@ describe('home route', () => {
 });
 
 describe('board route', () => {
-  it('maps /board to Triage Board TODO placeholder', () => {
+  it('maps /board to the built Triage Board screen', () => {
     const routes = read('src/app/app.routes.ts');
     const html = read('src/app/components/triage-board/triage-board.html');
     assert.match(routes, /path:\s*'board'[\s\S]*TriageBoard/);
-    assert.match(html, /<h1>TODO<\/h1>/);
+    assert.match(html, /app-profile-summary-bar/);
+    assert.match(html, /app-verdict-column/);
+    assert.match(html, /app-collapsed-rejects/);
   });
 });
 
