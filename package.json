@@ -6,7 +6,8 @@
     "start": "ng serve --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "node --test scripts/verify-scaffold.test.mjs && ng build"
+    "test": "node --test scripts/verify-scaffold.test.mjs && ng build",
+    "test:extraction": "node scripts/test-extraction-adapter.mjs"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

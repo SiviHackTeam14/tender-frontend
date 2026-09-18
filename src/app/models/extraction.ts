@@ -1,8 +1,10 @@
+import type { RoleRequired, Tender } from './tender';
+
 // Matches backend app/api/extraction_models.py and its OpenAPI schema.
 export interface ExtractedRequirements {
   trade_type: string | null;
   certifications_required: string[];
-  role_required: 'main_contractor' | 'subcontractor' | null;
+  role_required: RoleRequired | null;
   construction_window_start: string | null;
   construction_window_end: string | null;
   references_required: string | null;
@@ -15,7 +17,7 @@ export interface ExtractedRequirements {
 
 export type ExtractionField = keyof ExtractedRequirements;
 export type ExtractionStatus = 'queued' | 'selecting' | 'reading' | 'extracting' | 'completed' | 'failed';
-export type FieldStatus = 'extracted' | 'not_found' | 'conflict';
+export type FieldStatus = 'extracted' | 'not_found' | 'conflict' | 'needs_review';
 
 export interface SourceFinding {
   file: string;
@@ -41,6 +43,8 @@ export interface ExtractionResult {
   documents: SelectedDocument[];
   ignored_non_pdf: string[];
   requires_review: boolean;
+  review_reasons: Partial<Record<ExtractionField, string>>;
+  skipped_pages: { file: string; page: number; reason: 'confirmed_blank' }[];
   pages_processed: number;
   chunks_processed: number;
   coverage: 'selected_pdfs_only';
@@ -60,4 +64,9 @@ export interface ExtractionAccepted {
   id: string;
   status_url: string;
   audit_url: string;
+}
+
+// Includes the original extraction result/audit metadata inherited from ExtractionJob.
+export interface TenderExtractionJob extends ExtractionJob {
+  tender: Tender | null;
 }
