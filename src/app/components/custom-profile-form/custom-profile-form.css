@@ -1,0 +1,105 @@
+.custom-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.custom-profile-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field--wide {
+  grid-column: 1 / -1;
+}
+
+.form-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.form-field__control {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-container-lowest);
+  color: var(--on-surface);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.form-field__control::placeholder {
+  color: var(--on-surface-variant);
+}
+
+.form-field__control:focus {
+  outline: none;
+  border-color: var(--primary-container);
+  box-shadow: 0 0 0 1px var(--primary-container);
+}
+
+.form-field__control.ng-invalid.ng-touched,
+.form-field__control.ng-invalid.ng-dirty {
+  border-color: var(--error);
+}
+
+.form-field__error {
+  font-size: 12px;
+  color: var(--error);
+}
+
+.form-field__hint {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.custom-profile-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--outline-variant) 30%, transparent);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    opacity 150ms ease;
+}
+
+.button--primary {
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.button--primary:hover {
+  opacity: 0.95;
+}
+
+.button--ghost {
+  background-color: var(--surface-container);
+  color: var(--on-surface);
+}
+
+.button--ghost:hover {
+  background-color: var(--surface-container-high);
+}

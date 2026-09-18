@@ -1,1 +1,35 @@
-<h1>TODO</h1>
+@if (isUsableProfile()) {
+  <main class="triage-board">
+    <app-profile-summary-bar
+      [profileName]="activeProfile()!.name"
+      [totalCount]="bidRows().length + maybeRows().length + rejectRows().length"
+      [bidCount]="bidRows().length"
+      [maybeCount]="maybeRows().length"
+      [rejectCount]="rejectRows().length"
+      (setAsideClick)="openSetAside()"
+    />
+
+    <div class="triage-board__columns">
+      <app-verdict-column
+        title="Recommended to bid"
+        variant="bid"
+        [rows]="bidRows()"
+        (cardClick)="openTender($event)"
+      />
+      <app-verdict-column
+        title="Worth a closer look"
+        variant="maybe"
+        [rows]="maybeRows()"
+        (cardClick)="openTender($event)"
+      />
+    </div>
+
+    <app-collapsed-rejects
+      [rows]="rejectRows()"
+      [open]="showSetAside()"
+      (closed)="closeSetAside()"
+    />
+
+    <app-tender-detail-drawer [dossier]="selectedDossier()" (closed)="closeTender()" />
+  </main>
+}

@@ -39,7 +39,7 @@ describe('board route', () => {
 });
 
 describe('folder layout', () => {
-  it('tracks models, data, services, component stubs, and environment', () => {
+  it('tracks models, data, services, concrete components, and environment', () => {
     const required = [
       'src/app/models/extraction.ts',
       'src/app/data/.gitkeep',
@@ -47,8 +47,9 @@ describe('folder layout', () => {
       'src/app/components/tender-extraction/tender-extraction.ts',
       'src/app/components/profile-select/profile-select.ts',
       'src/app/components/triage-board/triage-board.ts',
-      'src/app/components/tender-card/.gitkeep',
-      'src/app/components/tender-detail-drawer/.gitkeep',
+      'src/app/components/tender-card/tender-card.ts',
+      'src/app/components/tender-detail-drawer/tender-detail-drawer.ts',
+      'src/app/components/criteria-breakdown/criteria-breakdown.ts',
       'src/app/environments/environment.ts',
     ];
     for (const rel of required) {

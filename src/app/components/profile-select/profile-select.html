@@ -1,1 +1,64 @@
-<h1>TODO</h1>
+<main class="profile-select">
+  <header class="profile-select__header">
+    <div class="profile-select__heading">
+      <div class="profile-select__title-row">
+        <span class="material-symbols-outlined profile-select__title-icon" aria-hidden="true"
+          >manage_accounts</span
+        >
+        <h1 class="profile-select__title">Company Profile Selection</h1>
+      </div>
+      <p class="profile-select__subtitle">
+        Select an active contractor qualification profile or configure custom triage evaluation
+        rules.
+      </p>
+    </div>
+    @if (showCustomForm()) {
+      <div class="profile-select__actions">
+        <button type="button" class="button button--ghost" (click)="closeCustomForm()">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          <span>Back to profiles</span>
+        </button>
+      </div>
+    } @else {
+      <div class="profile-select__actions">
+        <button type="button" class="button button--primary" (click)="openCustomForm()">
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+          <span>New Profile</span>
+        </button>
+      </div>
+    }
+  </header>
+
+  @if (showCustomForm()) {
+    <section class="profile-select__form-panel">
+      <app-custom-profile-form
+        (submitted)="onCustomSubmit($event)"
+        (cancelled)="closeCustomForm()"
+      />
+    </section>
+  } @else {
+    <section class="profile-select__grid">
+      @for (profile of profiles(); track profile.id) {
+        <app-profile-card
+          [profile]="profile"
+          [isActive]="isActive(profile)"
+          (select)="onSelect($event)"
+        />
+      }
+
+      <div class="profile-select__cta-card">
+        <div class="profile-select__cta-icon">
+          <span class="material-symbols-outlined" aria-hidden="true">add_business</span>
+        </div>
+        <h3 class="profile-select__cta-title">Create Custom Triage Profile</h3>
+        <p class="profile-select__cta-text">
+          Set up trade specializations, maximum bonding cap, geographical radii, and mandatory
+          certification filters.
+        </p>
+        <button type="button" class="button button--secondary" (click)="openCustomForm()">
+          + Add New Enterprise Profile
+        </button>
+      </div>
+    </section>
+  }
+</main>

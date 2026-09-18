@@ -1,0 +1,128 @@
+.profile-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background-color: var(--surface-container-lowest);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(11, 28, 48, 0.06);
+}
+
+.profile-summary-bar__identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-summary-bar__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: var(--surface-container-highest);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: inset 0 1px 2px rgba(11, 28, 48, 0.12);
+}
+
+.profile-summary-bar__name-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-summary-bar__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.profile-summary-bar__subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--secondary);
+}
+
+.profile-summary-bar__telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--surface-container-low);
+  color: var(--secondary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.profile-summary-bar__metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.profile-summary-bar__metric--bid {
+  color: var(--bid);
+}
+
+.profile-summary-bar__metric--maybe {
+  color: var(--maybe);
+}
+
+.profile-summary-bar__sep {
+  color: var(--outline-variant);
+  font-weight: 700;
+}
+
+.profile-summary-bar__set-aside {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.profile-summary-bar__set-aside:hover {
+  text-decoration: underline;
+}
+
+.profile-summary-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-summary-bar__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background-color: var(--surface-container);
+  color: var(--on-surface);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.profile-summary-bar__switch:hover {
+  background-color: var(--surface-container-high);
+}
+
+.profile-summary-bar__switch .material-symbols-outlined {
+  font-size: 16px;
+  color: var(--primary);
+}
