@@ -50,6 +50,19 @@ export class TriageBoard {
     return !!profile && SUPPORTED_PROFILE_IDS.has(profile.id);
   });
 
+  // True from the moment a supported profile becomes active until its
+  // analyses have resolved at least once -- covers both "request in flight"
+  // and the brief tick before the fetch-triggering effect has run.
+  readonly isLoadingAnalysis = computed(() => {
+    const profile = this.activeProfile();
+    if (!profile || !SUPPORTED_PROFILE_IDS.has(profile.id)) {
+      return false;
+    }
+    return !this.analysisService.hasResult(profile.id);
+  });
+
+  readonly analysisError = this.analysisService.error;
+
   private readonly rows = computed<TenderRow[]>(() => {
     const profile = this.activeProfile();
     if (!profile || !SUPPORTED_PROFILE_IDS.has(profile.id)) {
@@ -103,6 +116,13 @@ export class TriageBoard {
 
   openTender(tenderId: string): void {
     this.selectedTenderId.set(tenderId);
+  }
+
+  retryAnalysis(): void {
+    const profile = this.activeProfile();
+    if (profile) {
+      this.analysisService.retry(profile);
+    }
   }
 
   closeTender(): void {
