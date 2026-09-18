@@ -1,7 +1,7 @@
 # TenderPilot — Frontend
 
 **Hackathon:** SiviHack 2026 · Track 2 · Sponsor: Arctis AI
-**Team:** Three Out of Forty
+**Team:** XIVate
 
 ## What is this product?
 
