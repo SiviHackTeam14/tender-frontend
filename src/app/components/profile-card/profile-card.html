@@ -1,0 +1,53 @@
+<div class="profile-card" [class.profile-card--active]="isActive">
+  <div class="profile-card__header">
+    <div class="profile-card__identity">
+      <div class="profile-card__avatar">{{ initials }}</div>
+      <div class="profile-card__name-block">
+        <h3 class="profile-card__name">
+          {{ profile.name }}
+          <span
+            class="material-symbols-outlined profile-card__verified"
+            title="Verified profile"
+            aria-hidden="true"
+            >verified</span
+          >
+        </h3>
+        <span class="profile-card__subtitle">{{ profile.location }} &bull; {{ focusAreasLabel }}</span>
+      </div>
+    </div>
+    @if (isActive) {
+      <span class="profile-card__badge">Active Profile</span>
+    }
+  </div>
+
+  <div class="profile-card__stats">
+    <div class="profile-card__stat">
+      <span class="profile-card__stat-label">Operating Radius:</span>
+      <span class="profile-card__stat-value">&le; {{ profile.distance_limit_km }} km</span>
+    </div>
+    <div class="profile-card__stat">
+      <span class="profile-card__stat-label">Target Contract Value:</span>
+      <span class="profile-card__stat-value">{{ contractRangeLabel }}</span>
+    </div>
+    <div class="profile-card__stat">
+      <span class="profile-card__stat-label">Role:</span>
+      <span class="profile-card__stat-value">{{ roleLabel }}</span>
+    </div>
+    <div class="profile-card__stat">
+      <span class="profile-card__stat-label">Annual Revenue:</span>
+      <span class="profile-card__stat-value">{{ revenueLabel }}</span>
+    </div>
+    <div class="profile-card__stat">
+      <span class="profile-card__stat-label">Regulatory Familiarity:</span>
+      <span class="profile-card__stat-value">{{ regFamiliarityLabel }}</span>
+    </div>
+  </div>
+
+  <div class="profile-card__footer">
+    <span class="profile-card__id">NUTS: {{ profile.nuts_code }}</span>
+    <button type="button" class="profile-card__action" (click)="onAnalyzeClick()">
+      <span>Analyze tenders for {{ profile.name }}</span>
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+    </button>
+  </div>
+</div>
