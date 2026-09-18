@@ -19,13 +19,12 @@ behind it: *fit is not similarity* — a tender can match a company's trade
 perfectly and still be a hard no (wrong region, budget, missing certification,
 unavailable capacity).
 
-This Angular app is the **frontend client**. In its current, working state it
-covers the first step of that pipeline:
+This Angular app is the **frontend client**. In its current, it
+visualizes things as follows:
 
-- Upload a tender ZIP.
-- Watch live extraction progress against the backend.
-- Preview the 12 extracted requirement fields as JSON.
-- Download the extracted JSON.
+- 3 company profiles to analyze tenders for.
+- Tenders analyzed and categorized into 3 groups: "Recommended", "To Review" and "Set Aside".
+- Criterions and reasons for the categorization.
 
 The triage board (company profiles, BID/MAYBE/REJECT columns, 5-criteria
 breakdown) exists in the codebase as components and mock data from the original
@@ -54,17 +53,6 @@ cd ../backend
 source .venv/bin/activate
 uvicorn app.main:app --port 8000
 ```
-
-### Demo flow
-
-1. Open <http://localhost:4200> (the old `/board` URL redirects here).
-2. Upload a tender ZIP (e.g. a real bundle like the one in
-   `../33_61_2026_Ausschreibungsunterlagen`).
-3. Watch the status move through `queued → selecting → reading → extracting →
-   completed`.
-4. Preview the extracted 12-field JSON in the browser and download it.
-
-No company selection or bid/no-bid verdict is part of this flow yet.
 
 ### Tests
 
@@ -123,13 +111,6 @@ tests, and an `ng build`.
 
 ## Current limitations
 
-- **Only the extraction step is live.** `ExtractionService` (upload, poll,
-  fetch data/audit) is the only flow actually calling the backend.
-  `AnalysisService`, `ProfileService`, `TenderService` and the triage-board
-  components (`ProfileSelectComponent`, `TriageBoardComponent`,
-  `TenderCardComponent`, `TenderDetailDrawerComponent`, etc.) exist but run
-  against static mock JSON, not the live Gemini reasoning/hard-filter pipeline
-  described in the product vision above.
 - **No company profile input yet** in the live flow — extraction results are
   shown per uploaded document, not matched against a company's capabilities.
 - **No retry-safe re-upload.** After an uncertain network failure during
