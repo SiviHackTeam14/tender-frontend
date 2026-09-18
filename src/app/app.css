@@ -67,7 +67,6 @@
 	font-weight: 600;
 }
 
-.app-shell__status-pill,
 .app-shell__sidebar-kicker {
 	color: var(--on-surface-variant);
 	font-size: 0.6875rem;
@@ -79,22 +78,6 @@
 	width: 1px;
 	height: 1rem;
 	background: var(--outline-variant);
-}
-
-.app-shell__status-pill {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.375rem;
-	padding: 0.25rem 0.5rem;
-	border-radius: 9999px;
-	background: var(--surface-container);
-}
-
-.app-shell__status-dot {
-	width: 0.375rem;
-	height: 0.375rem;
-	border-radius: 9999px;
-	background: var(--tertiary-container);
 }
 
 .app-shell__profile-chip,
