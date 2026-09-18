@@ -1,6 +1,6 @@
 export const environment = {
   apiUrl: 'http://localhost:8000',
-  useMock: true,
+  useMock: false,
 };
 
 // Shared so the thin HTTP-client services don't each re-implement the
