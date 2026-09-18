@@ -1,0 +1,46 @@
+<section class="criteria-breakdown">
+  <header class="criteria-breakdown__header">
+    <div>
+      <p class="criteria-breakdown__eyebrow">Top 5 criteria assessment</p>
+      <h3 class="criteria-breakdown__title">Full reasoning behind the verdict</h3>
+    </div>
+    <div class="criteria-breakdown__stats">
+      <span class="criteria-breakdown__stat criteria-breakdown__stat--pass">
+        {{ countStatus('PASS') }} PASS
+      </span>
+      <span class="criteria-breakdown__stat criteria-breakdown__stat--warning">
+        {{ countStatus('WARNING') }} WARNING
+      </span>
+      <span class="criteria-breakdown__stat criteria-breakdown__stat--block">
+        {{ countStatus('BLOCK') }} BLOCK
+      </span>
+    </div>
+  </header>
+
+  <div class="criteria-breakdown__list">
+    <article
+      *ngFor="let item of criteriaItems; let index = index"
+      class="criterion-card"
+      [attr.data-status]="item.result.status.toLowerCase()"
+    >
+      <div class="criterion-card__icon" [attr.data-status]="item.result.status.toLowerCase()">
+        <span class="material-symbols-outlined">
+          {{ item.result.status === 'PASS' ? 'check_circle' : item.result.status === 'WARNING' ? 'warning' : 'cancel' }}
+        </span>
+      </div>
+
+      <div class="criterion-card__content">
+        <div class="criterion-card__heading">
+          <div>
+            <p class="criterion-card__label">{{ item.label }}</p>
+            <p class="criterion-card__key">{{ item.key }}</p>
+          </div>
+          <span class="criterion-card__status" [attr.data-status]="item.result.status.toLowerCase()">
+            {{ item.result.status }}
+          </span>
+        </div>
+        <p class="criterion-card__reason">{{ item.result.reason }}</p>
+      </div>
+    </article>
+  </div>
+</section>

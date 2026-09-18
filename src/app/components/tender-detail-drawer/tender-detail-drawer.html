@@ -1,0 +1,188 @@
+<div *ngIf="dossier as tender" class="drawer-shell">
+  <button
+    type="button"
+    class="drawer-shell__backdrop"
+    aria-label="Close tender dossier"
+    (click)="closeDrawer()"
+  ></button>
+
+  <section
+    class="drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="drawer-title"
+    (click)="onBackdropClick($event)"
+  >
+    <header class="drawer__header">
+      <div class="drawer__top-row">
+        <button type="button" class="drawer__back" (click)="closeDrawer()">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span>Back to triage board</span>
+        </button>
+        <button type="button" class="drawer__close" aria-label="Close tender dossier" (click)="closeDrawer()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="drawer__title-row">
+        <div class="drawer__title-block">
+          <div class="drawer__badge-row">
+            <span class="drawer__verdict" [attr.data-verdict]="tender.analysis.verdict.toLowerCase()">
+              {{ verdictLabels[tender.analysis.verdict] }}
+            </span>
+            <span class="drawer__procurement">Procurement: {{ tender.role_required === 'main_contractor' ? 'Main contractor' : 'Subcontractor' }}</span>
+            <span class="drawer__match-tag">
+              <span class="material-symbols-outlined">verified</span>
+              Policy match
+            </span>
+          </div>
+          <h2 id="drawer-title" class="drawer__title">{{ tender.title }}</h2>
+          <p class="drawer__subtitle">
+            {{ tender.location }} · {{ formatDistance(tender.distance_from_augsburg_km) }} from Augsburg ·
+            Deadline {{ formatDate(tender.deadline) }}
+          </p>
+        </div>
+      </div>
+
+      <p class="drawer__summary">{{ tender.analysis.summary }}</p>
+
+      <div *ngIf="tender.analysis.hard_reject_reason" class="drawer__alert">
+        <strong>Hard reject reason:</strong> {{ tender.analysis.hard_reject_reason }}
+      </div>
+    </header>
+
+    <div class="drawer__metrics">
+      <div class="drawer__metric">
+        <span class="drawer__metric-label">Contract estimate</span>
+        <span class="drawer__metric-value">{{ formatMoney(tender.value_eur) }}</span>
+      </div>
+      <div class="drawer__metric">
+        <span class="drawer__metric-label">Distance from depot</span>
+        <span class="drawer__metric-value">{{ formatDistance(tender.distance_from_augsburg_km) }}</span>
+      </div>
+      <div class="drawer__metric">
+        <span class="drawer__metric-label">Submission deadline</span>
+        <span class="drawer__metric-value drawer__metric-value--error">{{ formatDate(tender.deadline) }}</span>
+      </div>
+      <div class="drawer__metric">
+        <span class="drawer__metric-label">Trade type</span>
+        <span class="drawer__metric-value">{{ tender.trade_type.replaceAll('_', ' ') }}</span>
+      </div>
+    </div>
+
+    <div class="drawer__body">
+      <div class="drawer__callout">
+        <span class="material-symbols-outlined drawer__callout-icon">auto_awesome</span>
+        <div>
+          <h3>Executive triage synthesis</h3>
+          <p>{{ tender.analysis.summary }}</p>
+        </div>
+      </div>
+
+      <div class="drawer__grid">
+        <section class="drawer__panel">
+          <div class="drawer__panel-header">
+            <h3>Raw tender data</h3>
+            <span>Cross-check against the board verdict</span>
+          </div>
+
+          <dl class="facts-grid">
+            <div class="facts-grid__item">
+              <dt>Location</dt>
+              <dd>{{ tender.location }}</dd>
+            </div>
+            <div class="facts-grid__item">
+              <dt>Value</dt>
+              <dd>{{ formatMoney(tender.value_eur) }}</dd>
+            </div>
+            <div class="facts-grid__item">
+              <dt>Deadline</dt>
+              <dd>{{ formatDate(tender.deadline) }}</dd>
+            </div>
+            <div class="facts-grid__item">
+              <dt>Distance</dt>
+              <dd>{{ formatDistance(tender.distance_from_augsburg_km) }}</dd>
+            </div>
+            <div class="facts-grid__item">
+              <dt>Guarantee required</dt>
+              <dd>{{ formatMoney(tender.guarantee_required_eur) }}</dd>
+            </div>
+            <div class="facts-grid__item">
+              <dt>Self-perform minimum</dt>
+              <dd>{{ tender.eigenleistung_min_pct === null ? 'Not published' : tender.eigenleistung_min_pct + '%' }}</dd>
+            </div>
+            <div class="facts-grid__item facts-grid__item--wide">
+              <dt>References required</dt>
+              <dd>{{ tender.references_required }}</dd>
+            </div>
+            <div class="facts-grid__item facts-grid__item--wide">
+              <dt>Hidden blockers</dt>
+              <dd>
+                <ul *ngIf="tender.hidden_blockers.length; else noBlockers" class="blocker-list">
+                  <li *ngFor="let blocker of tender.hidden_blockers">{{ blocker }}</li>
+                </ul>
+                <ng-template #noBlockers>
+                  <span class="facts-grid__empty">No hidden blockers surfaced in the raw data.</span>
+                </ng-template>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="drawer__panel">
+          <app-criteria-breakdown [criteria]="tender.analysis.criteria"></app-criteria-breakdown>
+        </section>
+      </div>
+
+      <div class="drawer__grid">
+        <section class="drawer__panel">
+          <div class="drawer__panel-header">
+            <h3>Mandatory requirements</h3>
+            <span>Compliance clauses and blockers</span>
+          </div>
+          <ul class="drawer__bullet-list">
+            <li>
+              <span class="drawer__bullet-label">Role required</span>
+              <span>{{ tender.role_required.replaceAll('_', ' ') }}</span>
+            </li>
+            <li>
+              <span class="drawer__bullet-label">Certifications</span>
+              <span>{{ tender.certifications_required.length ? tender.certifications_required.join(', ') : 'None published' }}</span>
+            </li>
+            <li>
+              <span class="drawer__bullet-label">Tender source</span>
+              <span>{{ tender.source_url }}</span>
+            </li>
+            <li>
+              <span class="drawer__bullet-label">LV package</span>
+              <span>{{ tender.lv_url ?? 'Not published' }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="drawer__panel">
+          <div class="drawer__panel-header">
+            <h3>Operational notes</h3>
+            <span>Decision support references</span>
+          </div>
+          <ul class="drawer__bullet-list drawer__bullet-list--soft">
+            <li>{{ tender.analysis.hard_reject_reason ?? 'No hard reject reason present.' }}</li>
+            <li>{{ tender.analysis.criteria.competitive_position.reason }}</li>
+            <li>{{ tender.analysis.criteria.strategic_fit.reason }}</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <footer class="drawer__footer">
+      <div class="drawer__footer-meta">
+        <span class="material-symbols-outlined">folder_shared</span>
+        <span>ID synced with dossier cache</span>
+      </div>
+      <div class="drawer__footer-actions">
+        <button type="button" class="drawer__secondary-action" (click)="closeDrawer()">Close dossier</button>
+        <button type="button" class="drawer__primary-action">Add to active bid pipeline</button>
+      </div>
+    </footer>
+  </section>
+</div>

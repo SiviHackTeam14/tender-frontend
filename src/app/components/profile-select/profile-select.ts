@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CompanyProfile } from '../../models';
@@ -9,8 +10,9 @@ import { ProfileCardComponent } from '../profile-card/profile-card';
 // profile list and an in-page toggle between the card grid and the custom
 // profile form (no routing involved in that toggle; the URL stays '/').
 @Component({
+  imports: [CommonModule, ProfileCardComponent, CustomProfileFormComponent],
   selector: 'app-profile-select',
-  imports: [ProfileCardComponent, CustomProfileFormComponent],
+  standalone: true,
   templateUrl: './profile-select.html',
   styleUrl: './profile-select.css',
 })

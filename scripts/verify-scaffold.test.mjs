@@ -30,24 +30,30 @@ describe('home route', () => {
 });
 
 describe('board route', () => {
-  it('maps /board to Triage Board TODO placeholder', () => {
+  it('maps /board to the triage board with drawer components', () => {
     const routes = read('src/app/app.routes.ts');
-    const html = read('src/app/components/triage-board/triage-board.html');
+    const boardHtml = read('src/app/components/triage-board/triage-board.html');
+    const drawerHtml = read('src/app/components/tender-detail-drawer/tender-detail-drawer.html');
+    const criteriaHtml = read('src/app/components/criteria-breakdown/criteria-breakdown.html');
     assert.match(routes, /path:\s*'board'[\s\S]*TriageBoard/);
-    assert.match(html, /<h1>TODO<\/h1>/);
+    assert.match(boardHtml, /app-tender-card/);
+    assert.match(boardHtml, /app-tender-detail-drawer/);
+    assert.match(drawerHtml, /id="drawer-title"/);
+    assert.match(criteriaHtml, /Full reasoning behind the verdict/);
   });
 });
 
 describe('folder layout', () => {
-  it('tracks models, data, services, component stubs, and environment', () => {
+  it('tracks models, data, services, concrete components, and environment', () => {
     const required = [
       'src/app/models/.gitkeep',
       'src/app/data/.gitkeep',
       'src/app/services/.gitkeep',
       'src/app/components/profile-select/profile-select.ts',
       'src/app/components/triage-board/triage-board.ts',
-      'src/app/components/tender-card/.gitkeep',
-      'src/app/components/tender-detail-drawer/.gitkeep',
+      'src/app/components/tender-card/tender-card.ts',
+      'src/app/components/tender-detail-drawer/tender-detail-drawer.ts',
+      'src/app/components/criteria-breakdown/criteria-breakdown.ts',
       'src/app/environments/environment.ts',
     ];
     for (const rel of required) {
