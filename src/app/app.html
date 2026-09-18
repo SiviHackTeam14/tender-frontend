@@ -3,20 +3,14 @@
 		<div class="app-shell__brand-group">
 			<div class="app-shell__brand-mark">T</div>
 			<div class="app-shell__brand-copy">
-				<span class="app-shell__brand-name">TenderPilot</span>
-				<span class="app-shell__brand-tag">B2B triage OS</span>
-			</div>
-			<div class="app-shell__divider" aria-hidden="true"></div>
-			<div class="app-shell__status-pill">
-				<span class="app-shell__status-dot"></span>
-				<span>VOB/A 2024 Engine Active</span>
+				<span class="app-shell__brand-name">T.O.P.</span>
 			</div>
 		</div>
 
 		<div class="app-shell__header-actions">
 			<div class="app-shell__profile-chip">
 				<span class="material-symbols-outlined">corporate_fare</span>
-				<span class="app-shell__profile-name">Brenner &amp; Sohn Tiefbau GmbH</span>
+				<span class="app-shell__profile-name">{{ activeProfile()?.name ?? 'No profile selected' }}</span>
 				<span class="material-symbols-outlined app-shell__chevron">expand_more</span>
 			</div>
 			<button type="button" class="app-shell__icon-button" aria-label="Notifications">
@@ -25,14 +19,6 @@
 			<button type="button" class="app-shell__icon-button" aria-label="Preferences">
 				<span class="material-symbols-outlined">tune</span>
 			</button>
-			<div class="app-shell__divider" aria-hidden="true"></div>
-			<div class="app-shell__user-chip">
-				<div class="app-shell__avatar">KB</div>
-				<div class="app-shell__user-copy">
-					<span class="app-shell__user-name">Dr. Klaus Brandt</span>
-					<span class="app-shell__user-role">Lead estimator</span>
-				</div>
-			</div>
 		</div>
 	</header>
 
@@ -48,41 +34,6 @@
 				>
 					<span class="material-symbols-outlined">manage_accounts</span>
 					<span>Tender profiles</span>
-				</a>
-				<a routerLink="/board" routerLinkActive="is-active" class="app-shell__nav-link">
-					<span class="material-symbols-outlined">view_kanban</span>
-					<span>Triage board</span>
-				</a>
-				<a class="app-shell__nav-link" href="javascript:void(0)">
-					<span class="material-symbols-outlined">find_in_page</span>
-					<span>Spec inspector</span>
-				</a>
-				<a class="app-shell__nav-link" href="javascript:void(0)">
-					<span class="material-symbols-outlined">calculate</span>
-					<span>BOQ matrix</span>
-				</a>
-			</nav>
-		</div>
-
-		<div class="app-shell__sidebar-footer">
-			<div class="app-shell__velocity-card">
-				<div class="app-shell__velocity-row">
-					<span>Triage velocity</span>
-					<span class="app-shell__velocity-value">92%</span>
-				</div>
-				<div class="app-shell__velocity-bar">
-					<div class="app-shell__velocity-fill"></div>
-				</div>
-				<div class="app-shell__velocity-note">23 of 25 reviewed</div>
-			</div>
-			<nav class="app-shell__nav app-shell__nav--secondary">
-				<a class="app-shell__nav-link" href="javascript:void(0)">
-					<span class="material-symbols-outlined">inventory_2</span>
-					<span>Archive</span>
-				</a>
-				<a class="app-shell__nav-link" href="javascript:void(0)">
-					<span class="material-symbols-outlined">settings</span>
-					<span>Preferences</span>
 				</a>
 			</nav>
 		</div>

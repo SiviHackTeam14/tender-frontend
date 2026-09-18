@@ -92,7 +92,6 @@
 }
 
 .drawer__subtitle,
-.drawer__summary,
 .drawer__panel-header span,
 .facts-grid__item dd,
 .drawer__bullet-list li {
@@ -101,8 +100,7 @@
   line-height: 1.5;
 }
 
-.drawer__subtitle,
-.drawer__summary {
+.drawer__subtitle {
   margin: 0.5rem 0 0;
 }
 
