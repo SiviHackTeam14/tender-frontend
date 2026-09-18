@@ -61,9 +61,24 @@
   --reject-boundary: #fca5a5;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
   background-color: var(--background);
   color: var(--on-background);
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
 }

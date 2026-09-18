@@ -1,0 +1,44 @@
+<button
+  type="button"
+  class="tender-card"
+  [class.tender-card--active]="active"
+  [attr.data-verdict]="dossier.analysis.verdict.toLowerCase()"
+  (click)="selectTender()"
+>
+  <div class="tender-card__accent"></div>
+
+  <div class="tender-card__header">
+    <div class="tender-card__heading-copy">
+      <h3 class="tender-card__title">{{ dossier.title }}</h3>
+      <p class="tender-card__meta">{{ dossier.location }} · {{ formatDistance(dossier.distance_from_augsburg_km) }}</p>
+    </div>
+    <span class="tender-card__verdict">{{ verdictLabels[dossier.analysis.verdict] }}</span>
+  </div>
+
+  <div class="tender-card__chips">
+    <span class="tender-card__chip">
+      <span class="material-symbols-outlined">payments</span>
+      {{ formatMoney(dossier.value_eur) }}
+    </span>
+    <span class="tender-card__chip">
+      <span class="material-symbols-outlined">near_me</span>
+      {{ formatDistance(dossier.distance_from_augsburg_km) }}
+    </span>
+    <span class="tender-card__chip tender-card__chip--code">{{ dossier.trade_type }}</span>
+  </div>
+
+  <div class="tender-card__deadline">
+    <span class="material-symbols-outlined">schedule</span>
+    <span>Deadline: {{ formatDate(dossier.deadline) }}</span>
+    <span class="tender-card__deadline-note">{{ dossier.hidden_blockers.length ? 'Requires review' : 'Clear notice' }}</span>
+  </div>
+
+  <p class="tender-card__summary">{{ dossier.analysis.summary }}</p>
+
+  <div class="tender-card__footer">
+    <span *ngIf="dossier.hidden_blockers.length" class="tender-card__blockers">
+      {{ dossier.hidden_blockers.length }} hidden blocker{{ dossier.hidden_blockers.length === 1 ? '' : 's' }}
+    </span>
+    <span class="tender-card__open">Full breakdown</span>
+  </div>
+</button>
