@@ -33,7 +33,6 @@
 .app-shell__header-actions,
 .app-shell__profile-chip,
 .app-shell__user-chip,
-.app-shell__velocity-row,
 .app-shell__nav-link {
 	display: flex;
 	align-items: center;
@@ -70,21 +69,13 @@
 	font-weight: 600;
 }
 
-.app-shell__brand-tag,
 .app-shell__user-role,
 .app-shell__status-pill,
-.app-shell__sidebar-kicker,
-.app-shell__velocity-row,
-.app-shell__velocity-note {
+.app-shell__sidebar-kicker {
 	color: var(--on-surface-variant);
 	font-size: 0.6875rem;
 	font-weight: 600;
 	letter-spacing: 0.02em;
-}
-
-.app-shell__brand-tag {
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
 }
 
 .app-shell__divider {
@@ -185,8 +176,7 @@
 	box-shadow: 0 1px 8px rgba(15, 23, 42, 0.04);
 }
 
-.app-shell__sidebar-group,
-.app-shell__sidebar-footer {
+.app-shell__sidebar-group {
 	display: flex;
 	flex-direction: column;
 	gap: 0.875rem;
@@ -214,38 +204,6 @@
 .app-shell__nav-link.is-active {
 	background: var(--primary);
 	color: var(--on-primary);
-}
-
-.app-shell__velocity-card {
-	padding: 0.75rem;
-	border-radius: 0.5rem;
-	background: var(--surface-container-low);
-}
-
-.app-shell__velocity-row {
-	justify-content: space-between;
-	margin-bottom: 0.25rem;
-}
-
-.app-shell__velocity-value {
-	color: var(--primary);
-	font-family: 'JetBrains Mono', monospace;
-	font-size: 0.6875rem;
-	font-weight: 700;
-}
-
-.app-shell__velocity-bar {
-	height: 0.375rem;
-	border-radius: 9999px;
-	background: var(--surface-container-high);
-	overflow: hidden;
-}
-
-.app-shell__velocity-fill {
-	width: 92%;
-	height: 100%;
-	border-radius: inherit;
-	background: var(--primary);
 }
 
 .app-shell__content {
