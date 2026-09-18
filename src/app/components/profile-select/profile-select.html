@@ -1,96 +1,64 @@
-<section class="profile-select">
-	<header class="profile-select__hero">
-		<div class="profile-select__hero-copy">
-			<div class="profile-select__hero-kicker-row">
-				<span class="material-symbols-outlined profile-select__hero-icon">manage_accounts</span>
-				<p class="profile-select__eyebrow">Company profile selection</p>
-			</div>
-			<h1 class="profile-select__title">Select an active bidder profile</h1>
-			<p class="profile-select__copy">
-				Choose the contracting profile that should drive triage, hard-filtering, and dossier review.
-			</p>
-		</div>
+<main class="profile-select">
+  <header class="profile-select__header">
+    <div class="profile-select__heading">
+      <div class="profile-select__title-row">
+        <span class="material-symbols-outlined profile-select__title-icon" aria-hidden="true"
+          >manage_accounts</span
+        >
+        <h1 class="profile-select__title">Company Profile Selection</h1>
+      </div>
+      <p class="profile-select__subtitle">
+        Select an active contractor qualification profile or configure custom triage evaluation
+        rules.
+      </p>
+    </div>
+    @if (showCustomForm()) {
+      <div class="profile-select__actions">
+        <button type="button" class="button button--ghost" (click)="closeCustomForm()">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          <span>Back to profiles</span>
+        </button>
+      </div>
+    } @else {
+      <div class="profile-select__actions">
+        <button type="button" class="button button--primary" (click)="openCustomForm()">
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+          <span>New Profile</span>
+        </button>
+      </div>
+    }
+  </header>
 
-		<div class="profile-select__hero-actions">
-			<a class="profile-select__cta profile-select__cta--secondary" routerLink="/board">
-				<span class="material-symbols-outlined">arrow_back</span>
-				Return to triage board
-			</a>
-			<a class="profile-select__cta" routerLink="/board">
-				<span class="material-symbols-outlined">view_kanban</span>
-				Open triage board
-			</a>
-		</div>
-	</header>
+  @if (showCustomForm()) {
+    <section class="profile-select__form-panel">
+      <app-custom-profile-form
+        (submitted)="onCustomSubmit($event)"
+        (cancelled)="closeCustomForm()"
+      />
+    </section>
+  } @else {
+    <section class="profile-select__grid">
+      @for (profile of profiles(); track profile.id) {
+        <app-profile-card
+          [profile]="profile"
+          [isActive]="isActive(profile)"
+          (select)="onSelect($event)"
+        />
+      }
 
-	<div class="profile-select__grid">
-		<article
-			*ngFor="let profile of profiles; let index = index"
-			class="profile-select__card"
-			[class.profile-select__card--active]="index === 0"
-		>
-			<div class="profile-select__card-top">
-				<div class="profile-select__avatar" [class.profile-select__avatar--muted]="index !== 0">
-					{{ getProfileInitials(profile.name) }}
-				</div>
-				<div>
-					<p class="profile-select__card-kicker">{{ index === 0 ? 'Active demo profile' : 'Alternate mock profile' }}</p>
-					<h2>{{ profile.name }}</h2>
-					<p class="profile-select__card-location">
-						{{ profile.location }} · {{ formatFocusAreas(profile.focus_areas) }}
-					</p>
-				</div>
-				<span *ngIf="index === 0" class="profile-select__badge">Active profile</span>
-			</div>
-
-			<dl class="profile-select__facts">
-				<div>
-					<dt>Distance limit</dt>
-					<dd>{{ profile.distance_limit_km }} km</dd>
-				</div>
-				<div>
-					<dt>Role</dt>
-					<dd>{{ profile.role === 'main_contractor' ? 'Main contractor' : 'Subcontractor' }}</dd>
-				</div>
-				<div>
-					<dt>Bonding cap</dt>
-					<dd>{{ formatMoney(profile.max_guarantee_eur) }}</dd>
-				</div>
-				<div>
-					<dt>Contract range</dt>
-					<dd>{{ formatMoney(profile.min_contract_eur) }} - {{ formatMoney(profile.max_contract_eur) }}</dd>
-				</div>
-				<div>
-					<dt>Live pipeline</dt>
-					<dd>
-						{{ profileSummary(profile.id).total }} scanned · {{ profileSummary(profile.id).bid }} bid ·
-						{{ profileSummary(profile.id).review }} review
-					</dd>
-				</div>
-				<div>
-					<dt>Reg. familiarity</dt>
-					<dd>{{ formatRegFamiliarity(profile.reg_familiarity) }}</dd>
-				</div>
-			</dl>
-
-			<div class="profile-select__card-footer">
-				<span class="profile-select__card-id">ID: #{{ profile.id.replace('profile-', '').toUpperCase() }}</span>
-				<a class="profile-select__card-action" routerLink="/board">
-					Analyze tenders for {{ profile.name.split(' ')[0] }}
-					<span class="material-symbols-outlined">arrow_forward</span>
-				</a>
-			</div>
-		</article>
-
-		<article class="profile-select__card profile-select__card--ghost">
-			<div class="profile-select__ghost-icon">
-				<span class="material-symbols-outlined">add_business</span>
-			</div>
-			<h2>Create custom triage profile</h2>
-			<p>
-				Set up trade specialization, bonding caps, geographical radii, and mandatory certification filters.
-			</p>
-			<button type="button" class="profile-select__ghost-button">+ Add new enterprise profile</button>
-		</article>
-	</div>
-</section>
+      <div class="profile-select__cta-card">
+        <div class="profile-select__cta-icon">
+          <span class="material-symbols-outlined" aria-hidden="true">add_business</span>
+        </div>
+        <h3 class="profile-select__cta-title">Create Custom Triage Profile</h3>
+        <p class="profile-select__cta-text">
+          Set up trade specializations, maximum bonding cap, geographical radii, and mandatory
+          certification filters.
+        </p>
+        <button type="button" class="button button--secondary" (click)="openCustomForm()">
+          + Add New Enterprise Profile
+        </button>
+      </div>
+    </section>
+  }
+</main>

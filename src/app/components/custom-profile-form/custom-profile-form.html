@@ -1,0 +1,207 @@
+<form class="custom-profile-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <div class="custom-profile-form__grid">
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-name">Company name</label>
+      <input
+        id="cpf-name"
+        class="form-field__control"
+        type="text"
+        formControlName="name"
+        placeholder="e.g. Muster Bau GmbH"
+      />
+      @if (hasError('name')) {
+        <span class="form-field__error">Company name is required.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-location">Location</label>
+      <input
+        id="cpf-location"
+        class="form-field__control"
+        type="text"
+        formControlName="location"
+        placeholder="e.g. Augsburg"
+      />
+      @if (hasError('location')) {
+        <span class="form-field__error">Location is required.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-nuts">NUTS code</label>
+      <input
+        id="cpf-nuts"
+        class="form-field__control"
+        type="text"
+        formControlName="nuts_code"
+        placeholder="e.g. DE27"
+      />
+      @if (hasError('nuts_code')) {
+        <span class="form-field__error">NUTS code is required.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-distance">Distance limit (km)</label>
+      <input
+        id="cpf-distance"
+        class="form-field__control"
+        type="number"
+        min="0"
+        formControlName="distance_limit_km"
+      />
+      @if (hasError('distance_limit_km')) {
+        <span class="form-field__error">Enter a distance limit of 0 or more.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-role">Role</label>
+      <select id="cpf-role" class="form-field__control" formControlName="role">
+        <option value="" disabled>Select a role</option>
+        @for (option of roleOptions; track option) {
+          <option [value]="option">{{ formatLabel(option) }}</option>
+        }
+      </select>
+      @if (hasError('role')) {
+        <span class="form-field__error">Role is required.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-available-from">Available from</label>
+      <input
+        id="cpf-available-from"
+        class="form-field__control"
+        type="date"
+        formControlName="available_from"
+      />
+      @if (hasError('available_from')) {
+        <span class="form-field__error">Availability date is required.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-min-contract">Min contract value (EUR)</label>
+      <input
+        id="cpf-min-contract"
+        class="form-field__control"
+        type="number"
+        min="0"
+        formControlName="min_contract_eur"
+      />
+      @if (hasError('min_contract_eur')) {
+        <span class="form-field__error">Enter a minimum contract value of 0 or more.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-max-contract">Max contract value (EUR)</label>
+      <input
+        id="cpf-max-contract"
+        class="form-field__control"
+        type="number"
+        min="0"
+        formControlName="max_contract_eur"
+      />
+      @if (hasError('max_contract_eur')) {
+        <span class="form-field__error">Enter a maximum contract value of 0 or more.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-max-guarantee">Max guarantee (EUR)</label>
+      <input
+        id="cpf-max-guarantee"
+        class="form-field__control"
+        type="number"
+        min="0"
+        formControlName="max_guarantee_eur"
+      />
+      @if (hasError('max_guarantee_eur')) {
+        <span class="form-field__error">Enter a maximum guarantee of 0 or more.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-revenue">Annual revenue (EUR)</label>
+      <input
+        id="cpf-revenue"
+        class="form-field__control"
+        type="number"
+        min="0"
+        formControlName="revenue_eur"
+      />
+      @if (hasError('revenue_eur')) {
+        <span class="form-field__error">Enter an annual revenue of 0 or more.</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="cpf-reg-familiarity">Regulatory familiarity</label>
+      <select id="cpf-reg-familiarity" class="form-field__control" formControlName="reg_familiarity">
+        <option value="" disabled>Select familiarity level</option>
+        @for (option of regFamiliarityOptions; track option) {
+          <option [value]="option">{{ formatLabel(option) }}</option>
+        }
+      </select>
+      @if (hasError('reg_familiarity')) {
+        <span class="form-field__error">Regulatory familiarity is required.</span>
+      }
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="cpf-focus-areas">Focus areas</label>
+      <input
+        id="cpf-focus-areas"
+        class="form-field__control"
+        type="text"
+        formControlName="focus_areas"
+        placeholder="Comma-separated, e.g. road_construction, sewers, earthworks"
+      />
+      <span class="form-field__hint">Comma-separated list.</span>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="cpf-certifications">Certifications</label>
+      <input
+        id="cpf-certifications"
+        class="form-field__control"
+        type="text"
+        formControlName="certifications"
+        placeholder="Comma-separated, e.g. ISO_9001"
+      />
+      <span class="form-field__hint">Comma-separated list.</span>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="cpf-can-show">Can show references</label>
+      <input
+        id="cpf-can-show"
+        class="form-field__control"
+        type="text"
+        formControlName="can_show_references"
+        placeholder="Comma-separated, e.g. road rehabilitation, sewer renewal"
+      />
+      <span class="form-field__hint">Comma-separated list.</span>
+    </div>
+
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="cpf-cannot-show">Cannot show</label>
+      <input
+        id="cpf-cannot-show"
+        class="form-field__control"
+        type="text"
+        formControlName="cannot_show"
+        placeholder="Comma-separated, e.g. bridges, outside Germany"
+      />
+      <span class="form-field__hint">Comma-separated list.</span>
+    </div>
+  </div>
+
+  <div class="custom-profile-form__actions">
+    <button type="button" class="button button--ghost" (click)="onCancel()">Cancel</button>
+    <button type="submit" class="button button--primary">Save profile &amp; analyze tenders</button>
+  </div>
+</form>

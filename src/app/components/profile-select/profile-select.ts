@@ -1,55 +1,48 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { getTenderDossiersForProfile, mockProfiles } from '../../data/mock-dashboard-data';
+import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { CompanyProfile } from '../../models';
+import { ProfileService } from '../../services/profile.service';
+import { CustomProfileFormComponent } from '../custom-profile-form/custom-profile-form';
+import { ProfileCardComponent } from '../profile-card/profile-card';
 
+// Container for Story 4.1 -- injects ProfileService + Router, exposes the
+// profile list and an in-page toggle between the card grid and the custom
+// profile form (no routing involved in that toggle; the URL stays '/').
 @Component({
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, ProfileCardComponent, CustomProfileFormComponent],
   selector: 'app-profile-select',
   standalone: true,
   templateUrl: './profile-select.html',
   styleUrl: './profile-select.css',
 })
 export class ProfileSelect {
-  readonly profiles = mockProfiles;
+  private readonly profileService = inject(ProfileService);
+  private readonly router = inject(Router);
 
-  dossiersForProfile(profileId: string) {
-    return getTenderDossiersForProfile(profileId);
+  readonly profiles = this.profileService.profiles;
+  readonly activeProfile = this.profileService.activeProfile;
+  readonly showCustomForm = signal(false);
+
+  isActive(profile: CompanyProfile): boolean {
+    return this.activeProfile()?.id === profile.id;
   }
 
-  profileSummary(profileId: string): { bid: number; review: number; reject: number; total: number } {
-    const dossiers = this.dossiersForProfile(profileId);
-
-    return {
-      bid: dossiers.filter((dossier) => dossier.analysis.verdict === 'BID').length,
-      reject: dossiers.filter((dossier) => dossier.analysis.verdict === 'REJECT').length,
-      review: dossiers.filter((dossier) => dossier.analysis.verdict === 'MAYBE').length,
-      total: dossiers.length,
-    };
+  openCustomForm(): void {
+    this.showCustomForm.set(true);
   }
 
-  formatMoney(value: number): string {
-    return new Intl.NumberFormat('de-DE', {
-      currency: 'EUR',
-      maximumFractionDigits: 0,
-      style: 'currency',
-    }).format(value);
+  closeCustomForm(): void {
+    this.showCustomForm.set(false);
   }
 
-  formatFocusAreas(focusAreas: string[]): string {
-    return focusAreas.map((focusArea) => focusArea.replaceAll('_', ' ')).join(' · ');
+  onSelect(id: string): void {
+    this.profileService.selectProfile(id);
+    this.router.navigateByUrl('/board');
   }
 
-  formatRegFamiliarity(value: string): string {
-    return value.replaceAll('_', ' ');
-  }
-
-  getProfileInitials(name: string): string {
-    return name
-      .split(' ')
-      .map((part) => part.charAt(0))
-      .join('')
-      .slice(0, 2)
-      .toUpperCase();
+  onCustomSubmit(profile: CompanyProfile): void {
+    this.profileService.setCustomProfile(profile);
+    this.router.navigateByUrl('/board');
   }
 }

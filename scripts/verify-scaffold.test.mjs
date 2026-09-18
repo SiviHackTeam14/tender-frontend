@@ -20,11 +20,11 @@ describe('fresh clone run', () => {
 });
 
 describe('home route', () => {
-  it('maps / to the profile select landing page', () => {
+  it('maps / to the built Profile Select screen', () => {
     const routes = read('src/app/app.routes.ts');
     const html = read('src/app/components/profile-select/profile-select.html');
     assert.match(routes, /path:\s*''[\s\S]*ProfileSelect/);
-    assert.match(html, /Open triage board/);
+    assert.match(html, /Company Profile Selection/);
     assert.match(read('src/app/app.html'), /router-outlet/);
   });
 });
